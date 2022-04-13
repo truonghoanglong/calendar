@@ -1,5 +1,8 @@
 const date= new Date();
 
+const fullday = date.toLocaleDateString('pt-PT');
+
+console.log(fullday)
 
 const renderCalendar = () => {
         
@@ -36,7 +39,9 @@ const renderCalendar = () => {
 
     document.querySelector(".year-picker h1").innerHTML = months[date.getMonth()];
 
-    document.querySelector(".year-picker p").innerHTML = date.getFullYear();
+    document.querySelector(".year-picker p").innerHTML = fullday;  // date.getFullYear()
+
+    
 
 
 
@@ -45,16 +50,18 @@ const renderCalendar = () => {
 
     //ngay truoc do
     for(let x= firstDayIndex; x > 0; x--){
-        days += `<div class="prev-date">${prevLastDay - x +1 }</div>`
+        days += `<div class="prev-date">${prevLastDay - x}</div>`
     }
 
     //tong so ngay
     for(let i=1; i<=lastDays;i++){
 
         if (i === new Date().getDate() &&date.getMonth() === new Date().getMonth()) {
-            days += `<div class="today">${i}</div>`;
+            days += `<div class="today">
+                ${i}
+            </div>`;
         } else {
-            days += `<div>${i}</div>`;
+            days += `<div class="to">${i}</div>`;
             monthsDays.innerHTML = days;
         } 
     }
@@ -65,7 +72,7 @@ const renderCalendar = () => {
     //ngay sau do
     for (let j = 1; j <= nextDays; j++) {
         days += `<div class="next-date">${j}</div>`;
-        monthDays.innerHTML = days;
+        monthsDays.innerHTML = days;
     }
 
 }
@@ -81,5 +88,70 @@ document.querySelector("#next-year").addEventListener("click", () => {
     renderCalendar();
 });
 
+renderCalendar();
+
+
+
+// TODO_LIST
+const inputBox = document.querySelector(".inputField input");
+const addBtn = document.querySelector(".inputField button")
+const todoList = document.querySelector(".todoList")
+
+
+    
+inputBox.onkeyup = () =>{
+    let userData = inputBox.value;
+}
+showTask()
+    addBtn.onclick = () =>{
+        let userData =inputBox.value
+        let getLocalStorage = localStorage.getItem("New Todo")
+        if(getLocalStorage == null){
+            listArr = []; 
+        }else{
+            listArr = JSON.parse(getLocalStorage)
+        }
+        listArr.push(userData)
+        localStorage.setItem("New Todo",JSON.stringify(listArr));
+        showTask()
+    }
+
+    function showTask(){
+        let getLocalStorage = localStorage.getItem("New Todo")
+        if(getLocalStorage == null){
+            listArr = []; 
+        }else{
+            listArr = JSON.parse(getLocalStorage)
+        }
+
+        let newLiTag = '';
+
+        listArr.forEach((e,index)=>{
+            return newLiTag += `<li>${e} <button onclick="deleteTask(${index})" >X</button></li>`;
+        })
+        todoList.innerHTML = newLiTag;
+        inputBox.value= "";
+    }
+
+    const deleteTask = (index) =>{
+        
+        let getLocalStorage = localStorage.getItem("New Todo");
+        listArr = JSON.parse(getLocalStorage);
+
+        listArr.splice(index, 1);
+
+        localStorage.setItem("New Todo",JSON.stringify(listArr));
+        showTask()
+    }
+
+
 
 renderCalendar();
+
+
+
+//popup
+document.querySelector(".days").addEventListener('click',function(){
+    document.querySelector(".btn-add").classList.toggle('active')
+
+})
