@@ -2,7 +2,7 @@ const date= new Date();
 
 const fullday = date.toLocaleDateString('pt-PT');
 
-console.log(fullday)
+
 
 const renderCalendar = () => {
         
@@ -57,11 +57,13 @@ const renderCalendar = () => {
     for(let i=1; i<=lastDays;i++){
 
         if (i === new Date().getDate() &&date.getMonth() === new Date().getMonth()) {
-            days += `<div class="today">
-                ${i}
-            </div>`;
+            days += `<div class="to today" date-id="${new Date(date.getFullYear(),date.getMonth(),i).toDateString()}">
+                ${i} <div class="todayChild"></div>
+            </div>`
         } else {
-            days += `<div class="to">${i}</div>`;
+            days += `<div class="to" date-id="${new Date(date.getFullYear(),date.getMonth(),i).toDateString()}">
+            ${i}
+            </div>`;
             monthsDays.innerHTML = days;
         } 
     }
@@ -96,7 +98,7 @@ renderCalendar();
 const inputBox = document.querySelector(".inputField input");
 const addBtn = document.querySelector(".inputField button")
 const todoList = document.querySelector(".todoList")
-
+const renderDay = document.querySelector(".todayChild");
 
     
 inputBox.onkeyup = () =>{
@@ -123,13 +125,14 @@ showTask()
         }else{
             listArr = JSON.parse(getLocalStorage)
         }
-
+        let newTo = "";
         let newLiTag = '';
-
         listArr.forEach((e,index)=>{
-            return newLiTag += `<li>${e} <button onclick="deleteTask(${index})" >X</button></li>`;
+            return newLiTag += `<li>${e} <button onclick="deleteTask(${index})" >X</button></li>`,
+            newTo += `<li>${e}</li>`    
         })
         todoList.innerHTML = newLiTag;
+        renderDay.innerHTML = newTo;
         inputBox.value= "";
     }
 
@@ -146,12 +149,18 @@ showTask()
 
 
 
-renderCalendar();
+// renderCalendar();
 
 
 
 //popup
 document.querySelector(".days").addEventListener('click',function(){
     document.querySelector(".btn-add").classList.toggle('active')
-
 })
+
+document.querySelector(".days").addEventListener("click", function (e) {
+    document.querySelector(".btn-add").classList.toggle("active");
+    let dayPop = e.target.getAttribute("date-id");
+    document.querySelector(".btn-add h3").innerHTML = dayPop;
+});
+  

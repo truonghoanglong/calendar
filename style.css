@@ -78,7 +78,7 @@ body {
 
 .days div.curr-date,
 .days div.curr-date:hover {
-    background-color:blue;
+    background-color:rgb(255, 8, 8);
     color: white;
     border-radius: 50%;
 }
@@ -92,10 +92,6 @@ body {
     border-radius: 10px;
     cursor: pointer;
 }
-
-/* .month-picker:hover {
-    background-color: var(--color-hover);
-} */
 
 .year-picker {
     display: flex;
@@ -113,9 +109,7 @@ body {
     cursor: pointer;
 }
 
-/* .year-change:hover {
-    background-color: var(--color-hover);
-} */
+
 
 .calendar-footer {
     padding: 10px;
@@ -195,9 +189,7 @@ body {
     color: var(--color-txt);
 }
 
-.month-list > div > div:hover {
-    background-color: var(--color-hover);
-}
+
 .prev-date,
 .next-date {
   opacity: 0.5;
@@ -207,13 +199,13 @@ body {
     background-color: #167e56;
     color:#ffff;
 }
-
+/* 
 .days div:hover:not(.today) {
     background-color: #262626;
     border: 0.2rem solid #777;
     cursor: pointer;
     color:#ffff;
-  }
+  } */
 
 
 
