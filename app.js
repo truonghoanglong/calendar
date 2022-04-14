@@ -2,7 +2,7 @@ const date= new Date();
 
 const fullday = date.toLocaleDateString('pt-PT');
 
-
+let idd ="";
 
 const renderCalendar = () => {
         
@@ -104,19 +104,40 @@ const renderDay = document.querySelector(".todayChild");
 inputBox.onkeyup = () =>{
     let userData = inputBox.value;
 }
-showTask()
-    addBtn.onclick = () =>{
+    showTask()
+
+function addLocal(id){
+    let idd = id
+    document.querySelector(".inputField button").addEventListener("click",()=>{
         let userData =inputBox.value
         let getLocalStorage = localStorage.getItem("New Todo")
         if(getLocalStorage == null){
             listArr = []; 
+            
         }else{
             listArr = JSON.parse(getLocalStorage)
         }
-        listArr.push(userData)
+        // listArr.push(userData)
+        // const kq = {idd:listArr}
+        // console.log(kq)
+
+        listArr.push({"id":id,"task":userData})
         localStorage.setItem("New Todo",JSON.stringify(listArr));
         showTask()
-    }
+    })
+}
+// addBtn.onclick = () =>{
+//     let userData =inputBox.value
+//     let getLocalStorage = localStorage.getItem("New Todo")
+//     if(getLocalStorage == null){
+//         listArr = []; 
+//     }else{
+//         listArr = JSON.parse(getLocalStorage)
+//     }
+//     listArr.push(userData)
+//     localStorage.setItem("New Todo",JSON.stringify(listArr));
+//     showTask()
+// }
 
     function showTask(){
         let getLocalStorage = localStorage.getItem("New Todo")
@@ -162,5 +183,8 @@ document.querySelector(".days").addEventListener("click", function (e) {
     document.querySelector(".btn-add").classList.toggle("active");
     let dayPop = e.target.getAttribute("date-id");
     document.querySelector(".btn-add h3").innerHTML = dayPop;
+    addLocal(dayPop)
 });
+
+
   
