@@ -2,7 +2,8 @@ const date= new Date();
 
 const fullday = date.toLocaleDateString('pt-PT');
 
-let idd ="";
+let saveID = '';
+
 
 const renderCalendar = () => {
         
@@ -55,19 +56,21 @@ const renderCalendar = () => {
 
     //tong so ngay
     for(let i=1; i<=lastDays;i++){
-
+        // <div class="todayChild" ></div>
         if (i === new Date().getDate() &&date.getMonth() === new Date().getMonth()) {
             days += `<div class="to today" date-id="${new Date(date.getFullYear(),date.getMonth(),i).toDateString()}">
-                ${i} <div class="todayChild"></div>
+                ${i} ${showTask(new Date(date.getFullYear(),date.getMonth(),i).toDateString())}
             </div>`
+            monthsDays.innerHTML = days;
         } else {
             days += `<div class="to" date-id="${new Date(date.getFullYear(),date.getMonth(),i).toDateString()}">
-            ${i}
+            ${i} 
             </div>`;
             monthsDays.innerHTML = days;
         } 
     }
 
+    //${showTask(new Date(date.getFullYear(),date.getMonth(),i).toDateString())}
     //days += `<div>${i}</div>`
     //monthsDays.innerHTML = days;
 
@@ -98,34 +101,53 @@ renderCalendar();
 const inputBox = document.querySelector(".inputField input");
 const addBtn = document.querySelector(".inputField button")
 const todoList = document.querySelector(".todoList")
-const renderDay = document.querySelector(".todayChild");
+// const renderDay = document.querySelector(".todayChild");
 
     
 inputBox.onkeyup = () =>{
     let userData = inputBox.value;
 }
-    showTask()
 
-function addLocal(id){
-    let idd = id
-    document.querySelector(".inputField button").addEventListener("click",()=>{
-        let userData =inputBox.value
-        let getLocalStorage = localStorage.getItem("New Todo")
-        if(getLocalStorage == null){
-            listArr = []; 
-            
-        }else{
-            listArr = JSON.parse(getLocalStorage)
-        }
-        // listArr.push(userData)
-        // const kq = {idd:listArr}
-        // console.log(kq)
+showTask()
 
-        listArr.push({"id":id,"task":userData})
-        localStorage.setItem("New Todo",JSON.stringify(listArr));
-        showTask()
-    })
+document.querySelector(".days").addEventListener("click", function (e) {
+    document.querySelector(".btn-add").classList.toggle("active");
+    let dayPop = e.target.getAttribute("date-id");
+    document.querySelector(".btn-add h3").innerHTML = dayPop;
+    saveID = dayPop ;
+    showTask(saveID)
+    //testcode 
+
+});
+
+function idDay(){
+
 }
+
+
+    
+document.querySelector(".inputField button").addEventListener("click",()=>{
+    let userData =inputBox.value
+    let getLocalStorage = localStorage.getItem("New Todo")
+    if(getLocalStorage == null){
+        calendarData = {};     
+    }else{
+        calendarData = JSON.parse(getLocalStorage)
+    }
+        
+        // console.log(calendarData, calendarData[saveID])
+    if(!calendarData[saveID]) { 
+        calendarData[saveID] =  []
+        calendarData[saveID].push(userData)            
+    }else calendarData[saveID].push(userData)
+
+    calendarData ={...calendarData, [saveID]: calendarData[saveID]}
+
+    localStorage.setItem("New Todo",JSON.stringify(calendarData));
+    showTask()
+})
+
+// }
 // addBtn.onclick = () =>{
 //     let userData =inputBox.value
 //     let getLocalStorage = localStorage.getItem("New Todo")
@@ -139,32 +161,72 @@ function addLocal(id){
 //     showTask()
 // }
 
-    function showTask(){
+    function showTask(id){
+        console.log(id)
         let getLocalStorage = localStorage.getItem("New Todo")
         if(getLocalStorage == null){
-            listArr = []; 
+            calendarData = {}; 
         }else{
-            listArr = JSON.parse(getLocalStorage)
+            calendarData = JSON.parse(getLocalStorage)
         }
-        let newTo = "";
+
+        let keys =[]
+
+        value = Object.values(calendarData)
+        keys = Object.keys(calendarData)
+        console.log(keys)
+
+        // console.log(calendarData['id'])
+
+      
+
         let newLiTag = '';
-        listArr.forEach((e,index)=>{
-            return newLiTag += `<li>${e} <button onclick="deleteTask(${index})" >X</button></li>`,
-            newTo += `<li>${e}</li>`    
+
+        const checkIDlocal = keys.map(e=>{
+            console.log(e,id);
+            if(e === id ){
+                return calendarData[id].map((item, index) => {
+                    return newLiTag += `<li key=${index}>${item}</li>`
+                })
+            }
+            return [];
         })
-        todoList.innerHTML = newLiTag;
-        renderDay.innerHTML = newTo;
-        inputBox.value= "";
+        console.log(checkIDlocal)
+
+        // const checkID = keys.map(e=>{
+        //     if(e == saveID){
+        //         console.log("value",value)
+        //     }
+        // })
+
+        // if(keys === saveID) {
+        //     console.log('output');
+        // }
+
+        // let newTo = "";
+        // checkIDlocal.forEach((e,index)=>{
+        //     return newLiTag += `<li>${e} <button onclick="deleteTask(${index})" >X</button> </li>`,
+        //     newTo += `<li>${e}</li>`    
+        // })
+
+        // calendarData.forEach((e,index)=>{
+        //     return newLiTag += `<li>${e} <button onclick="deleteTask(${index})" >X</button></li>`,
+        //     newTo += `<li>${e}</li>`    
+        // })
+        
+        // todoList.innerHTML = newLiTag;
+        // renderDay.innerHTML = newTo;
+        // inputBox.value= "";
     }
 
     const deleteTask = (index) =>{
         
         let getLocalStorage = localStorage.getItem("New Todo");
-        listArr = JSON.parse(getLocalStorage);
+        calendarData = JSON.parse(getLocalStorage);
 
-        listArr.splice(index, 1);
+        calendarData.splice(index, 1);
 
-        localStorage.setItem("New Todo",JSON.stringify(listArr));
+        localStorage.setItem("New Todo",JSON.stringify(calendarData));
         showTask()
     }
 
@@ -179,12 +241,13 @@ document.querySelector(".days").addEventListener('click',function(){
     document.querySelector(".btn-add").classList.toggle('active')
 })
 
-document.querySelector(".days").addEventListener("click", function (e) {
-    document.querySelector(".btn-add").classList.toggle("active");
-    let dayPop = e.target.getAttribute("date-id");
-    document.querySelector(".btn-add h3").innerHTML = dayPop;
-    addLocal(dayPop)
-});
+// document.querySelector(".days").addEventListener("click", function (e) {
+//     document.querySelector(".btn-add").classList.toggle("active");
+//     let dayPop = e.target.getAttribute("date-id");
+//     document.querySelector(".btn-add h3").innerHTML = dayPop;
+//     addLocal(dayPop)
+//     let idd = dayPop;
+// });
 
 
   
