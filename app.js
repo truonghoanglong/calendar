@@ -59,7 +59,7 @@ const renderCalendar = () => {
         // <div class="todayChild" ></div>
         if (i === new Date().getDate() &&date.getMonth() === new Date().getMonth()) {
             days += `<div class="to today" date-id="${new Date(date.getFullYear(),date.getMonth(),i).toDateString()}">
-                ${i} ${showTask(new Date(date.getFullYear(),date.getMonth(),i).toDateString())}
+                ${i} <ul ${showTask(new Date(date.getFullYear(),date.getMonth(),i).toDateString())} >  </ul>
             </div>`
             monthsDays.innerHTML = days;
         } else {
@@ -100,7 +100,7 @@ renderCalendar();
 // TODO_LIST
 const inputBox = document.querySelector(".inputField input");
 const addBtn = document.querySelector(".inputField button")
-const todoList = document.querySelector(".todoList")
+const todoList = document.querySelector(".btn-add ul")
 // const renderDay = document.querySelector(".todayChild");
 
     
@@ -162,6 +162,7 @@ document.querySelector(".inputField button").addEventListener("click",()=>{
 // }
 
     function showTask(id){
+        const todoList = document.querySelector(".btn-add ul")
         console.log(id)
         let getLocalStorage = localStorage.getItem("New Todo")
         if(getLocalStorage == null){
@@ -186,7 +187,7 @@ document.querySelector(".inputField button").addEventListener("click",()=>{
             console.log(e,id);
             if(e === id ){
                 return calendarData[id].map((item, index) => {
-                    return newLiTag += `<li key=${index}>${item}</li>`
+                    return newLiTag += `<li key=${index}> ${item} </li>`
                 })
             }
             return [];
@@ -214,7 +215,7 @@ document.querySelector(".inputField button").addEventListener("click",()=>{
         //     newTo += `<li>${e}</li>`    
         // })
         
-        // todoList.innerHTML = newLiTag;
+        todoList.innerHTML = newLiTag;
         // renderDay.innerHTML = newTo;
         // inputBox.value= "";
     }
