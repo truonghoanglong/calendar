@@ -57,14 +57,15 @@ const renderCalendar = () => {
     //tong so ngay
     for(let i=1; i<=lastDays;i++){
         // <div class="todayChild" ></div>
+        
         if (i === new Date().getDate() &&date.getMonth() === new Date().getMonth()) {
             days += `<div class="to today" date-id="${new Date(date.getFullYear(),date.getMonth(),i).toDateString()}">
-                ${i} <ul ${showTask(new Date(date.getFullYear(),date.getMonth(),i).toDateString())} >  </ul>
+                ${i} <div class="todayChild" ${showTask(new Date(date.getFullYear(),date.getMonth(),i).toDateString())}></div>
             </div>`
             monthsDays.innerHTML = days;
         } else {
             days += `<div class="to" date-id="${new Date(date.getFullYear(),date.getMonth(),i).toDateString()}">
-            ${i} 
+            ${i} <ul class="todayChild" ></ul>
             </div>`;
             monthsDays.innerHTML = days;
         } 
@@ -116,13 +117,11 @@ document.querySelector(".days").addEventListener("click", function (e) {
     document.querySelector(".btn-add h3").innerHTML = dayPop;
     saveID = dayPop ;
     showTask(saveID)
+    // deleteTask(saveID)
     //testcode 
 
 });
 
-function idDay(){
-
-}
 
 
     
@@ -163,6 +162,8 @@ document.querySelector(".inputField button").addEventListener("click",()=>{
 
     function showTask(id){
         const todoList = document.querySelector(".btn-add ul")
+        const renderDay = document.querySelector(".todayChild");
+
         console.log(id)
         let getLocalStorage = localStorage.getItem("New Todo")
         if(getLocalStorage == null){
@@ -182,33 +183,22 @@ document.querySelector(".inputField button").addEventListener("click",()=>{
       
 
         let newLiTag = '';
-
+        let newTo = "";
         const checkIDlocal = keys.map(e=>{
             console.log(e,id);
             if(e === id ){
                 return calendarData[id].map((item, index) => {
-                    return newLiTag += `<li key=${index}> ${item} </li>`
+                    return newLiTag += `<li key=${index}> ${item} <button onclick="deleteTask(${index})" >X</button> </li>`,
+                    newTo += `<li>${item}</li>`;
                 })
             }
             return [];
         })
         console.log(checkIDlocal)
 
-        // const checkID = keys.map(e=>{
-        //     if(e == saveID){
-        //         console.log("value",value)
-        //     }
-        // })
+        
+        //const checkDayID = 
 
-        // if(keys === saveID) {
-        //     console.log('output');
-        // }
-
-        // let newTo = "";
-        // checkIDlocal.forEach((e,index)=>{
-        //     return newLiTag += `<li>${e} <button onclick="deleteTask(${index})" >X</button> </li>`,
-        //     newTo += `<li>${e}</li>`    
-        // })
 
         // calendarData.forEach((e,index)=>{
         //     return newLiTag += `<li>${e} <button onclick="deleteTask(${index})" >X</button></li>`,
@@ -216,16 +206,28 @@ document.querySelector(".inputField button").addEventListener("click",()=>{
         // })
         
         todoList.innerHTML = newLiTag;
-        // renderDay.innerHTML = newTo;
+        renderDay.innerHTML = newTo;
         // inputBox.value= "";
     }
 
     const deleteTask = (index) =>{
-        
+        console.log("delete",index);
         let getLocalStorage = localStorage.getItem("New Todo");
         calendarData = JSON.parse(getLocalStorage);
 
         calendarData.splice(index, 1);
+            
+        // const checkIDlocal = keys.map(e=>{
+        //     console.log(e,id);
+        //     if(e === id ){
+        //         return calendarData[id].map((item, index) => {
+        //             return newLiTag += `<li key=${index}> ${item} <button onclick="deleteTask(${index})" >X</button> </li>`,
+        //             newTo += `<li>${item}</li>`;
+        //         })
+        //     }
+        //     return [];
+        // })
+        // calendarData.splice(index, 1);
 
         localStorage.setItem("New Todo",JSON.stringify(calendarData));
         showTask()
